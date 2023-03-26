@@ -26,8 +26,6 @@ public class StudentController {
     students.add(new Student(3, "Ram", "Angrea"));
     students.add(new Student(4, "Sanjay", "Kumar"));
     return students;
-
-
   }
 }
 
