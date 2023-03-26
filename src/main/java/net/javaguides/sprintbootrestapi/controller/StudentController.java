@@ -8,9 +8,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
+// import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -19,29 +20,32 @@ import java.util.ArrayList;
 @RestController
 public class StudentController {
   @GetMapping("student")
-  public Student getStudent() {
+  public ResponseEntity<Student> getStudent() {
     Student student = new Student(
       1,
       "John",
       "Doe"
     );
-    return student;
+    return ResponseEntity.ok()
+    .header("custom-header", "remesh")
+    .body(student);
   }
   @GetMapping("students")
-  public List<Student> getStudents() {
+  public ResponseEntity<List<Student>> getStudents() {
     List<Student> students = new ArrayList<>();
     students.add(new Student(1, "John", "Doe"));
     students.add(new Student(2, "Umesh", "Doe"));
     students.add(new Student(3, "Ram", "Angrea"));
     students.add(new Student(4, "Sanjay", "Kumar"));
-    return students;
+    return ResponseEntity.ok(students);
   }
   @GetMapping("students/{id}/{first-name}/{last-name}")
-  public Student studentPathVariable(
+  public ResponseEntity<Student> studentPathVariable(
     @PathVariable("id") int studentId,
     @PathVariable("first-name") String firstName,
     @PathVariable("last-name") String lastName) {
-    return new Student(studentId, firstName, lastName);
+    Student student = new Student(studentId, firstName, lastName);
+    return ResponseEntity.ok(student);
   }
   //http://localhost:8080/students/query?id=1&firstName=John&lastName=Doe
   @GetMapping("students/query")
@@ -54,25 +58,25 @@ public class StudentController {
   // Sprign boot REST API that hancles HTTP POST Request
   // @PostMapping and @RequestBody
   @PostMapping("students/create")
-  @ResponseStatus(HttpStatus.CREATED)
-  public Student createStudent(@RequestBody Student student) {
+  // @ResponseStatus(HttpStatus.CREATED)
+  public ResponseEntity<Student> createStudent(@RequestBody Student student) {
     System.out.println(student.getId());
     System.out.println(student.getFirstName());
     System.out.println(student.getLastName());
-    return student;
+    return new ResponseEntity<>(student, HttpStatus.CREATED);
   }
   // Spring boot REST API that handles HTTP PUT Request - updating existing resource
   @PutMapping("students/{id}/update")
-  public Student updateStudent(@RequestBody Student student, @PathVariable("id") int studentId) {
+  public ResponseEntity<Student> updateStudent(@RequestBody Student student, @PathVariable("id") int studentId) {
     System.out.println(student.getFirstName());
     System.out.println(student.getLastName());
-    return student;
+    return ResponseEntity.ok(student);
   }
   // Spring boot REST API that handles HTTP DELETE Request - deleting existing resource
   @DeleteMapping("students/{id}/delete")
-  public String deleteStudent(@PathVariable("id") int studentId) {
+  public ResponseEntity<String> deleteStudent(@PathVariable("id") int studentId) {
     System.out.println(studentId);
-    return "Student deleted successfully";
+    return ResponseEntity.ok("Student deleted successfully");
   }
 }
 
